@@ -24,7 +24,8 @@ long chat_id;
 Adafruit_BME280 bme;
 
 float temperature, humidity, pressure;
-boolean waterAlertFlag = 0;
+int waterSensorADC = 0;
+boolean waterAlertFlag = false;
 const int analogInPin = A0;
 
 /*********************************************
@@ -64,13 +65,17 @@ void loop() {
     // message   [i]                     [     0,      1,      2,      3,        4,     5   ]
     
     if (millis() > Bot_lasttime + Bot_mtbs)  {
+        
+        
         bot.getUpdates(String(offset));                     // checking new messages by interval
         executeMessage();
+        
         printToSerial();                                    // printing our message array to Serial
+        checkForWater();
+        
         Bot_lasttime = millis();                            // Update next interval
     }
     
-//    checkForWater();
 
 }
 
@@ -79,12 +84,15 @@ void loop() {
 *                    checkForWater()
 **********************************************/
 String checkForWater()   {
-    if(analogRead(analogInPin) > 300)    {
-        waterAlertFlag = 1;
-    }
-    else    {
-        waterAlertFlag = 0;
-    }
+//    if(waterSensorADC > 300)    {
+//        waterAlertFlag = true;
+//    }
+//    else    {
+//        waterAlertFlag = false;
+//    }
+
+    Serial.println("From checkForWater method.");
+    
 }
 
 /*********************************************
@@ -118,39 +126,24 @@ void executeMessage()   {
     
     offset = (bot.message[1][0]).toInt();                   // initial setup of an offset-key
 
-    if (bot.message[1][5] == "\/start") {
-        bot.sendMessage(bot.message[1][4], startMessage, "");
+
+    for (int i = 1; i < bot.message[0][0].toInt() + 1; i++)      {
+        //        bot.message[i][5]=bot.message[i][5].substring(1,bot.message[i][5].length());
+        
+        if (bot.message[i][5] == "\/start") {
+            bot.sendMessage(bot.message[i][4], startMessage, "");
+        }
+        if (bot.message[i][5] == "\/climate") {
+            bot.sendMessage(bot.message[i][4], climateMessage, "");
+        }
+//        else if(bot.message[i][5] != "")    {
+//            bot.sendMessage(bot.message[i][4], "Send a correct command. Check it with \/start.", "");
+//        }
+        
+        if(waterAlertFlag)  {
+            bot.sendMessage(bot.message[i][4], waterAlertMessage, "");
+        }
     }
-    if (bot.message[1][5] == "\/climate") {
-        bot.sendMessage(bot.message[1][4], climateMessage, "");
-    }
-    else    {
-        bot.sendMessage(bot.message[1][4], "Send a correct command. Check it with \/start.", "");
-    }
-
-    if(waterAlertFlag)  {
-        bot.sendMessage(bot.message[1][4], waterAlertMessage, "");
-    }
-
-    
-
-
-//  for (int i = 1; i < bot.message[0][0].toInt() + 1; i++)      {
-//    //        bot.message[i][5]=bot.message[i][5].substring(1,bot.message[i][5].length());
-//
-//    if (bot.message[i][5] == "\/start") {
-//        bot.sendMessage(bot.message[i][4], startMessage, "");
-//    }
-//    if (bot.message[i][5] == "\/climate") {
-//        bot.sendMessage(bot.message[i][4], climateMessage, "");
-//    }
-//    else    {
-//        bot.sendMessage(bot.message[i][4], "Send a correct command. Check it with \/start.", "");
-//    }
-//
-//  }
-
-
 
     bot.message[0][0] = "";     // All messages have been replied - reset new messages
     // IDK mb it isn't need
@@ -180,8 +173,9 @@ void printToSerial()    {
         Serial.println();
     }
     
-//    Serial.print("ADC value = ");
-//    Serial.println(analogRead(analogInPin));
+    Serial.print("ADC value = ");
+    waterSensorADC = analogRead(analogInPin);
+    Serial.println(waterSensorADC);
     Serial.println(getClimate());
     //    bot.sendMessage(bot.message[1][4], "hello! from ESP", "");
     //    bot.message[0][0] = "";                             // marking all messages as read
