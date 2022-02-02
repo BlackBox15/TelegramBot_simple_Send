@@ -84,14 +84,14 @@ void loop() {
 *                    checkForWater()
 **********************************************/
 String checkForWater()   {
-//    if(waterSensorADC > 300)    {
-//        waterAlertFlag = true;
-//    }
-//    else    {
-//        waterAlertFlag = false;
-//    }
-
-    Serial.println("From checkForWater method.");
+    if(waterSensorADC > 300)    {
+        waterAlertFlag = true;
+    }
+    else  {
+        waterAlertFlag = false;
+    }
+    
+//    Serial.println("From checkForWater method.");
     
 }
 
@@ -118,14 +118,13 @@ String getClimate()   {
 **********************************************/
 void executeMessage()   {
 
-    String startMessage = "Wellcome from @lilsmarthomebot, your personal Bot on ESP8266 board.";
+    String startMessage = "Wellcome from @lilsmarthomebot, your personal Bot on ESP8266 board.&#10;sdfsdf";
                     //  startMessage += "\/start - Print this message.\r";
                     //  startMessage += "\/climate - Get the climate info.\r";
     String climateMessage = getClimate();
     String waterAlertMessage = "ALERT! WATER!";
     
     offset = (bot.message[1][0]).toInt();                   // initial setup of an offset-key
-
 
     for (int i = 1; i < bot.message[0][0].toInt() + 1; i++)      {
         //        bot.message[i][5]=bot.message[i][5].substring(1,bot.message[i][5].length());
@@ -140,9 +139,10 @@ void executeMessage()   {
 //            bot.sendMessage(bot.message[i][4], "Send a correct command. Check it with \/start.", "");
 //        }
         
-        if(waterAlertFlag)  {
-            bot.sendMessage(bot.message[i][4], waterAlertMessage, "");
-        }
+    }
+
+    if(waterAlertFlag)  {
+        bot.sendMessage(bot.message[1][4], waterAlertMessage, "");
     }
 
     bot.message[0][0] = "";     // All messages have been replied - reset new messages
@@ -176,6 +176,10 @@ void printToSerial()    {
     Serial.print("ADC value = ");
     waterSensorADC = analogRead(analogInPin);
     Serial.println(waterSensorADC);
+    
+    Serial.print("waterAlertFlag value = ");
+    Serial.println(waterAlertFlag);
+    
     Serial.println(getClimate());
     //    bot.sendMessage(bot.message[1][4], "hello! from ESP", "");
     //    bot.message[0][0] = "";                             // marking all messages as read
