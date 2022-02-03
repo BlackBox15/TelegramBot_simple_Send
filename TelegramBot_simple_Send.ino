@@ -118,7 +118,7 @@ String getClimate()   {
 **********************************************/
 void executeMessage()   {
 
-    String startMessage = "Wellcome from @lilsmarthomebot, your personal Bot on ESP8266 board.&#10;sdfsdf";
+    String startMessage = "Wellcome from @lilsmarthomebot, your personal Bot on ESP8266 board.\r\nsdfsdf";
                     //  startMessage += "\/start - Print this message.\r";
                     //  startMessage += "\/climate - Get the climate info.\r";
     String climateMessage = getClimate();
