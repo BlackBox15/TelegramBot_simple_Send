@@ -6,13 +6,13 @@
 #include <Adafruit_BME280.h>
 
 //_______________________ Initialize Telegram BOT
-#define BOTtoken "5214355646:AAEbkjgO9eG7XLAdUax0jDR_VUIlGgFEeso"  //token of TestBOT
+#define BOTtoken "xxxxxxxxxxxxxx:xxxxxxxxxxxxxxxxx"  //token of TestBOT
 #define BOTname "LilSmartHome"
 #define BOTusername "lilsmarthomebot"
 
 //_______________________ Initialize Wifi connection to the router
-char ssid[] = "Keenetic-5525";                      // your network SSID (name)
-char password[] = "EYZco21EYZco21";                 // your network key
+char ssid[] = "xxxxxxxxxxxxxxxxxxxxxxx";                      // your network SSID (name)
+char password[] = "xxxxxxxxxxxxxxxxxxxxxxx";                 // your network key
 
 TelegramBOT bot(BOTtoken, BOTname, BOTusername);
 
